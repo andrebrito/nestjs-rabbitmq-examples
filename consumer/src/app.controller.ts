@@ -14,19 +14,21 @@ export class AppController {
 
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('food_queue')
+  @MessagePattern('food_queue')
   processFoodQueue(@Payload() data: string, @Ctx() context: RmqContext) {
     this.logger.log('processing foods queue...');
     this.logger.log('data', data);
-    this.logger.log('context', context);
     this.logger.log('finish processing foods queue!');
+
+    return 'food done!';
   }
 
-  @MessagePattern('beverage_queue')
+  @EventPattern('beverage_queue')
   processBevQueue(@Payload() data: string, @Ctx() context: RmqContext) {
     this.logger.log('processing beverages queue...');
     this.logger.log('data', data);
-    this.logger.log('context', context);
     this.logger.log('finish processing beverages queue!');
+
+    return 'beverage done!';
   }
 }

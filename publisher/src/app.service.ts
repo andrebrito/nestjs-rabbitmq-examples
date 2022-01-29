@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AppService {
@@ -8,25 +9,59 @@ export class AppService {
     @Inject('RESTAURANT_SERVICE') private readonly client: ClientProxy,
   ) {}
 
-  enqueueFood(data: any) {
-    this.logger.log('enqueueing food...');
-    this.logger.log(data);
-
-    const result = this.client.emit('food_queue', data);
-    this.logger.log('result from emit:');
-    this.logger.log(result);
-
-    this.logger.log('food enqueued!');
+  async enqueueFood(data: any) {
+    this.logger.log('');
+    try {
+      this.logger.log('SENDING food');
+      const result = await firstValueFrom(this.client.send('food_queue', data));
+      this.logger.log('result from send:', JSON.stringify(result));
+    } catch (err) {
+      this.logger.error(err);
+    }
+    this.logger.log('');
   }
 
-  enqueueBeverage(data: any) {
-    this.logger.log('enqueueing beverage...');
-    this.logger.log(data);
+  async enqueueSalad(data: any) {
+    this.logger.log('');
+    try {
+      this.logger.log('EMITTING salad');
+      const result = await firstValueFrom(this.client.emit('food_queue', data));
+      this.logger.log('result from emit:', JSON.stringify(result));
+    } catch (err) {
+      this.logger.error(err);
+    }
+    this.logger.log('');
+  }
 
-    const result = this.client.emit('beverage_queue', data);
-    this.logger.log('result from emit:');
-    this.logger.log(result);
+  async enqueueBeverage(data: any) {
+    this.logger.log('');
+    try {
+      this.logger.log('EMITTING beverage');
+      const result = await firstValueFrom(
+        this.client.emit('beverage_queue', data),
+      );
 
-    this.logger.log('beverage enqueued!');
+      this.logger.log('result from emit:');
+      this.logger.log(JSON.stringify(result));
+    } catch (err) {
+      this.logger.error(err);
+    }
+    this.logger.log('');
+  }
+
+  async enqueueWine(data: any) {
+    this.logger.log('');
+    try {
+      this.logger.log('SENDING wine');
+      const result = await firstValueFrom(
+        this.client.send('beverage_queue', data),
+      );
+
+      this.logger.log('result from send:');
+      this.logger.log(JSON.stringify(result));
+    } catch (err) {
+      this.logger.error(err);
+    }
+    this.logger.log('');
   }
 }
