@@ -9,59 +9,41 @@ export class AppService {
     @Inject('RESTAURANT_SERVICE') private readonly client: ClientProxy,
   ) {}
 
-  async enqueueFood(data: any) {
-    this.logger.log('');
-    try {
-      this.logger.log('SENDING food');
-      const result = await firstValueFrom(this.client.send('food_queue', data));
-      this.logger.log('result from send:', JSON.stringify(result));
-    } catch (err) {
-      this.logger.error(err);
-    }
-    this.logger.log('');
-  }
+  async all() {
+    const resultFromSendingToMessage = await firstValueFrom(
+      this.client.send('food_queue', 'rice'),
+    );
 
-  async enqueueSalad(data: any) {
-    this.logger.log('');
-    try {
-      this.logger.log('EMITTING salad');
-      const result = await firstValueFrom(this.client.emit('food_queue', data));
-      this.logger.log('result from emit:', JSON.stringify(result));
-    } catch (err) {
-      this.logger.error(err);
-    }
-    this.logger.log('');
-  }
+    const resultFromEmittingToMessage = await firstValueFrom(
+      this.client.send('food_queue', 'salad'),
+    );
 
-  async enqueueBeverage(data: any) {
-    this.logger.log('');
-    try {
-      this.logger.log('EMITTING beverage');
-      const result = await firstValueFrom(
-        this.client.emit('beverage_queue', data),
-      );
+    const resultFromSendingToEvent = await firstValueFrom(
+      this.client.send('beverage_queue', 'water'),
+    );
 
-      this.logger.log('result from emit:');
-      this.logger.log(JSON.stringify(result));
-    } catch (err) {
-      this.logger.error(err);
-    }
-    this.logger.log('');
-  }
+    const resultFromEmittingToEvent = await firstValueFrom(
+      this.client.send('beverage_queue', 'wine'),
+    );
 
-  async enqueueWine(data: any) {
-    this.logger.log('');
-    try {
-      this.logger.log('SENDING wine');
-      const result = await firstValueFrom(
-        this.client.send('beverage_queue', data),
-      );
+    this.logger.log(
+      'resultFromSendingToMessage',
+      JSON.stringify(resultFromSendingToMessage),
+    );
 
-      this.logger.log('result from send:');
-      this.logger.log(JSON.stringify(result));
-    } catch (err) {
-      this.logger.error(err);
-    }
-    this.logger.log('');
+    this.logger.log(
+      'resultFromEmittingToMessage',
+      JSON.stringify(resultFromEmittingToMessage),
+    );
+
+    this.logger.log(
+      'resultFromSendingToEvent',
+      JSON.stringify(resultFromSendingToEvent),
+    );
+
+    this.logger.log(
+      'resultFromEmittingToEvent',
+      JSON.stringify(resultFromEmittingToEvent),
+    );
   }
 }

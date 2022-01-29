@@ -7,9 +7,6 @@ export class AppController {
 
   @Post('/')
   async enqueueFood() {
-    await this.appService.enqueueFood({ food: 'rice' });
-    await this.appService.enqueueSalad({ food: 'lettuce' });
-    await this.appService.enqueueBeverage({ beverage: 'water' });
-    await this.appService.enqueueWine({ beverage: 'cabernet sauvignon' });
+    await this.appService.all();
   }
 }
